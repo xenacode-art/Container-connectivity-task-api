@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  background:
+    image: background
+    depends_on:
+      - api
+    environment:
+      API_HOST: api
+      API_PORT: 5002
+    links:
+      - api
+
+  api:
+    image: api
+    depends_on:
+      - mysql
+    ports:
+      - 5002:5002
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: api_user
+      DB_NAME: orders
+      DB_PASS: CloudAcademy!
+      API_PORT: 5002
+    links:
+      - mysql
+
+  mysql:
+    image: mysql:8
+    ports:
+      - 3306:3306
+    volumes:
+      - /cloudacademy/lab/volumes:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=CloudAcademy!
+      - MYSQL_PASSWORD=CloudAcademy!
+      - MYSQL_USER=api_user
+      - MYSQL_DATABASE=orders
